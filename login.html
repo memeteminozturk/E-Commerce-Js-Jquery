@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- FAVICON -->
+    <link rel="icon" href="https://gifimage.net/wp-content/uploads/2017/11/favicon-gif-2.gif" type="image/gif">
+    <!--        BOOTSTRAP CSS       -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+        integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <!--        BOOTSTRAP JS       -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"
+        integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous">
+    </script>
+    <!--        FONT AWESOME       -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!--        CUSTOM CSS       -->
+    <link rel="stylesheet" href="css/login-signup.css">
+    <!--        CUSTOM JS       -->
+    <script src="js/index.js"></script>
+</head>
+
+<body>
+    <section class="login-container">
+        <div class="login">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <h1>LOG IN</h1>
+                    </div>
+                    <div class="col-12">
+                        <form id="login-form" action="index.html" method="post" novalidate>
+                            <div class="row">
+                                <div class="col-12 input-field">
+                                    <label for="email">Email</label>
+                                    <input type="email" name="email" id="email" placeholder="Email" class="email" required>
+                                    <div id="email-error" class="error"></div>
+                                </div>
+                                <div class="col-12 input-field position-relative">
+                                    <label for="password">Password</label>
+                                    <input type="password" name="password" id="password" placeholder="Password"
+                                        class="password" value="" required>
+                                    <i class="fa fa-eye" id="toggle-password"></i>
+                                    <div id="password-error" class="error"></div>
+                                </div>
+                                <div class="col-12">
+                                    <a href="#" class="forgot-password">Forgot Password?</a>
+                                </div>
+
+                                <div class="col-12 button-field">
+                                    <button type="submit" name="submit" id="submit" class="loginBtn">Login</button>
+                                </div>
+                                <div class="col-12 button-field">
+                                    <p>Don't have an account? </p> <a href="signup.html">Sign Up</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>
