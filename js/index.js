@@ -3,7 +3,7 @@ $(() => {
   $.getJSON("products.json", (products) => {
     products.forEach((product) => {
       productsDom.append(`
-        <div class="col-3">
+        <div class="col-md-3">
             <div class="product">
             <div class="product-image">
                 <img src="${product.image}"/>
