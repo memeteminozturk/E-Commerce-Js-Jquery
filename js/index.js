@@ -158,20 +158,20 @@ $(() => {
     }
   }
 
-  window.onload = function () {
-    if (localStorage.getItem("shoppingCart")) {
-      cart = JSON.parse(localStorage.getItem("shoppingCart"));
-      cart.map((item) => {
-        cartTotal += parseFloat(item.price) * item.productAmount;
-        cartCount += item.productAmount;
-        cartTotalDom.text("BORCUNUZ " + cartTotal.toFixed(2) + " TL");
-        cartCountDom.text(cartCount);
-        miniCartCountDom.text(cartCount);
-        miniCartTotalDom.text(cartTotal.toFixed(2) + " TL");
-      });
-    }
-    displayCart();
-  };
+  // window.onload = function () {
+  //   if (localStorage.getItem("shoppingCart")) {
+  //     cart = JSON.parse(localStorage.getItem("shoppingCart"));
+  //     cart.map((item) => {
+  //       cartTotal += parseFloat(item.price) * item.productAmount;
+  //       cartCount += item.productAmount;
+  //       cartTotalDom.text("BORCUNUZ " + cartTotal.toFixed(2) + " TL");
+  //       cartCountDom.text(cartCount);
+  //       miniCartCountDom.text(cartCount);
+  //       miniCartTotalDom.text(cartTotal.toFixed(2) + " TL");
+  //     });
+  //   }
+  //   displayCart();
+  // };
 
   $(".mini-cart-content .container .row .mini-cart-items").on(
     "click",
@@ -278,12 +278,25 @@ $(() => {
       saveLocalCart();
     }
   );
-});
 
-// LOGIN PAGE
-$(document).ready(function () {
+
+  const name = $("#name");
+  const signupEmail = $("#signup-form #email");
+  const signupPassword = $("#signup-form #password");
+  const signupPasswordConf = $("#signup-form #password-conf");
+  const passwordConfError = $("#password-conf-error");
+  const nameError = $("#name-error");
+  const phone = $("#phone");
+  const phoneError = $("#phone-error");
+  const agreement = $("#agreement");
+  const agreementError = $("#agreement-error");
+  const signupForm = $("#signup-form");
+
+  // LOGIN PAGE
   const togglePassword = $("#toggle-password");
+  const logPassword = $("#login-form #password");
   const password = $("#password");
+
   togglePassword.on("click", function () {
     const type = password.attr("type") === "password" ? "text" : "password";
     password.attr("type", type);
@@ -291,15 +304,27 @@ $(document).ready(function () {
   });
 
   // INPUT VALIDATION
-  const email = $("#email");
+  const logEmail = $("#login-form #email");
   const loginForm = $("#login-form");
   const emailError = $("#email-error");
   const passwordError = $("#password-error");
+  const logout = $(".logout-link");
 
-  // CHECK INPUTS
+  //CHECK NAME INPUT
+  function checkName() {
+    const nameValue = name.val().trim();
+    if (nameValue === "") {
+      nameError.text("Name cannot be blank");
+      nameError.css("display", "block");
+      return false;
+    } else {
+      nameError.css("display", "none");
+      return true;
+    }
+  }
 
   function checkEmail() {
-    const emailValue = email.val().trim();
+    const emailValue = signupEmail.val().trim();
     if (emailValue === "") {
       emailError.text("Email cannot be blank");
       emailError.css("display", "block");
@@ -308,14 +333,35 @@ $(document).ready(function () {
       emailError.text("Email format is incorrect");
       emailError.css("display", "block");
       return false;
+    } else if (emailExists(emailValue)) {
+      emailError.text("Email already exists");
+      emailError.css("display", "block");
+      return false;
     } else {
       emailError.css("display", "none");
       return true;
     }
   }
 
+  function emailExists(emailValue) {
+    users = JSON.parse(localStorage.getItem("users"));
+    if (users) {
+      for (user of users) {
+        if (user.email === emailValue) {
+          return true;
+        }
+      }
+    } else {
+      return false;
+    }
+  }
+
+  function isEmail(signupEmail) {
+    return /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(signupEmail);
+  }
+
   function checkPassword() {
-    const passwordValue = password.val().trim();
+    const passwordValue = signupPassword.val().trim();
     if (passwordValue === "") {
       passwordError.text("Password cannot be blank");
       passwordError.css("display", "block");
@@ -354,20 +400,529 @@ $(document).ready(function () {
     }
   }
 
-
-  // IS EMAIL
-
-  function isEmail(email) {
-    return /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email);
+  function checkPhone() {
+    const phoneValue = phone.val().trim();
+    if (phoneValue === "") {
+      phoneError.text("Phone cannot be blank");
+      phoneError.css("display", "block");
+      return false;
+    } else if (!isPhone(phoneValue)) {
+      phoneError.text("Phone format is incorrect");
+      phoneError.css("display", "block");
+      return false;
+    } else {
+      phoneError.css("display", "none");
+      return true;
+    }
   }
+
+  function isPhone(phone) {
+    return /^(\+90|0)?[0-9]{10}$/.test(phone);
+  }
+
+  function checkPasswordConfirm() {
+    const passwordValue = signupPassword.val().trim();
+    const passwordConfirmValue = signupPasswordConf.val().trim();
+    if (passwordValue !== passwordConfirmValue) {
+      passwordConfError.text("Passwords do not match");
+      passwordConfError.css("display", "block");
+      return false;
+    } else {
+      passwordConfError.css("display", "none");
+      return true;
+    }
+  }
+
+  function checkAgreement() {
+    if (!agreement.is(":checked")) {
+      agreementError.text("You must accept the agreement");
+      agreementError.css("display", "block");
+      return false;
+    } else {
+      agreementError.css("display", "none");
+      return true;
+    }
+  }
+
+  function registerUser() {
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const nameValue = name.val().trim();
+    const emailValue = signupEmail.val().trim();
+    const passwordValue = signupPassword.val().trim();
+    const phoneValue = phone.val().trim();
+    const newUser = {
+      id: users.length + 1,
+      name: nameValue,
+      email: emailValue,
+      password: passwordValue,
+      phone: phoneValue,
+    };
+    users.push(newUser);
+    localStorage.setItem("users", JSON.stringify(users));
+  }
+
+  function saveUser() {
+    const logEmailValue = logEmail.val().trim();
+    localStorage.setItem("email", logEmailValue);
+  }
+
+  function isLoggedIn() {
+    return localStorage.getItem("email") !== null;
+  }
+
+  function logoutUser() {
+    localStorage.removeItem("email");
+    window.location.href = "index.html";
+    $(".login-link").css("display", "block");
+    $(".signup-link").css("display", "block");
+    $(".logout-link").css("display", "none");
+    $(".user-link").css("display", "none");
+  }
+
+  function checkLoginEmail() {
+    const logEmailValue = logEmail.val().trim();
+    if (logEmailValue === "") {
+      emailError.text("Email cannot be blank");
+      emailError.css("display", "block");
+      return false;
+    } else if (matchesEmail(logEmailValue) === false) {
+      emailError.text("Email does not exist");
+      emailError.css("display", "block");
+      return false;
+    } else {
+      emailError.css("display", "none");
+      return true;
+    }
+  }
+
+  function checkLoginPassword() {
+    const logPasswordValue = logPassword.val().trim();
+    const logEmailValue = logEmail.val().trim();
+    if (matchesPassword(logEmailValue, logPasswordValue) === false) {
+      passwordError.text("Password is incorrect");
+      passwordError.css("display", "block");
+      return false;
+    } else if (logPasswordValue === "") {
+      passwordError.text("Password cannot be blank");
+      passwordError.css("display", "block");
+      return false;
+    } else {
+      emailError.css("display", "none");
+      passwordError.css("display", "none");
+      return true;
+    }
+  }
+
+  function matchesEmail(email) {
+    users = JSON.parse(localStorage.getItem("users"));
+    for (let i = 0; i < users.length; i++) {
+      if (users[i].email == email) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  function matchesPassword(logEmail, logPassword) {
+    for (let i = 0; i < users.length; i++) {
+      if (users[i].email == logEmail && users[i].password === logPassword) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  signupForm.on("submit", (e) => {
+    e.preventDefault();
+    checkName();
+    checkEmail();
+    checkPassword();
+    checkPhone();
+    checkPasswordConfirm();
+    checkAgreement();
+    if (
+      checkName() &&
+      checkEmail() &&
+      checkPassword() &&
+      checkPhone() &&
+      checkPasswordConfirm() &&
+      checkAgreement()
+    ) {
+      registerUser();
+      window.location.href = "login.html";
+    }
+  });
+
+  function windowLoad() {
+    if (isLoggedIn()) {
+      $(".login-link").css("display", "none");
+      $(".signup-link").css("display", "none");
+      $(".logout-link").css("display", "block");
+      $(".user-link").css("display", "block");
+      const users = JSON.parse(localStorage.getItem("users"));
+      const email = localStorage.getItem("email");
+      for (let i = 0; i < users.length; i++) {
+        if (users[i].email == email) {
+          $(".user-link a").html(users[i].name);
+        }
+      }
+    } else {
+      $(".login-link").css("display", "block");
+      $(".signup-link").css("display", "block");
+      $(".logout-link").css("display", "none");
+      $(".user-link").css("display", "none");
+    }
+  }
+
+  function windowLoad2() {
+    if (localStorage.getItem("shoppingCart")) {
+      cart = JSON.parse(localStorage.getItem("shoppingCart"));
+      cart.map((item) => {
+        cartTotal += parseFloat(item.price) * item.productAmount;
+        cartCount += item.productAmount;
+        cartTotalDom.text("BORCUNUZ " + cartTotal.toFixed(2) + " TL");
+        cartCountDom.text(cartCount);
+        miniCartCountDom.text(cartCount);
+        miniCartTotalDom.text(cartTotal.toFixed(2) + " TL");
+      });
+    }
+    displayCart();
+  }
+
+  window.onload = () => {
+    windowLoad();
+    windowLoad2();
+  };
 
   loginForm.on("submit", (e) => {
     e.preventDefault();
-    checkEmail();
-    checkPassword();
-    if (checkEmail() && checkPassword()) {
+    checkLoginEmail();
+    checkLoginPassword();
+    if (checkLoginEmail() && checkLoginPassword()) {
+      saveUser();
       window.location.href = "index.html";
-
     }
   });
+
+  logout.on("click", () => {
+    logoutUser();
+  });
 });
+
+// LOGIN - SIGNUP PAGE
+// $(document).ready(function () {
+//   // SIGNUP PAGE
+//   let users = [];
+//   const name = $("#name");
+//   const signupEmail = $("#signup-form #email");
+//   const signupPassword = $("#signup-form #password");
+//   const signupPasswordConf = $("#signup-form #password-conf");
+//   const passwordConfError = $("#password-conf-error");
+//   const nameError = $("#name-error");
+//   const phone = $("#phone");
+//   const phoneError = $("#phone-error");
+//   const agreement = $("#agreement");
+//   const agreementError = $("#agreement-error");
+//   const signupForm = $("#signup-form");
+
+//   // LOGIN PAGE
+//   const togglePassword = $("#toggle-password");
+//   const logPassword = $("#login-form #password");
+//   const password = $("#password");
+
+//   togglePassword.on("click", function () {
+//     const type = password.attr("type") === "password" ? "text" : "password";
+//     password.attr("type", type);
+//     $(this).toggleClass("fa-eye-slash");
+//   });
+
+//   // INPUT VALIDATION
+//   const logEmail = $("#login-form #email");
+//   const loginForm = $("#login-form");
+//   const emailError = $("#email-error");
+//   const passwordError = $("#password-error");
+//   const logout = $(".logout-link");
+
+//   //CHECK NAME INPUT
+//   function checkName() {
+//     const nameValue = name.val().trim();
+//     if (nameValue === "") {
+//       nameError.text("Name cannot be blank");
+//       nameError.css("display", "block");
+//       return false;
+//     } else {
+//       nameError.css("display", "none");
+//       return true;
+//     }
+//   }
+
+//   function checkEmail() {
+//     const emailValue = signupEmail.val().trim();
+//     if (emailValue === "") {
+//       emailError.text("Email cannot be blank");
+//       emailError.css("display", "block");
+//       return false;
+//     } else if (!isEmail(emailValue)) {
+//       emailError.text("Email format is incorrect");
+//       emailError.css("display", "block");
+//       return false;
+//     } else if (emailExists(emailValue)) {
+//       emailError.text("Email already exists");
+//       emailError.css("display", "block");
+//       return false;
+//     } else {
+//       emailError.css("display", "none");
+//       return true;
+//     }
+//   }
+
+//   function emailExists(emailValue) {
+//     users = JSON.parse(localStorage.getItem("users"));
+//     if (users) {
+//       for (user of users) {
+//         if (user.email === emailValue) {
+//           return true;
+//         }
+//       }
+//     } else {
+//       return false;
+//     }
+//   }
+
+//   function isEmail(signupEmail) {
+//     return /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(signupEmail);
+//   }
+
+//   function checkPassword() {
+//     const passwordValue = signupPassword.val().trim();
+//     if (passwordValue === "") {
+//       passwordError.text("Password cannot be blank");
+//       passwordError.css("display", "block");
+//       return false;
+//     } else if (passwordValue.length < 6) {
+//       passwordError.text("Your password must be at least 6 characters");
+//       passwordError.css("display", "block");
+//       return false;
+//     } else if (passwordValue.length > 20) {
+//       passwordError.text("Your password must be less than 20 characters");
+//       passwordError.css("display", "block");
+//       return false;
+//     } else if (!passwordValue.match(/[A-Z]/)) {
+//       passwordError.text(
+//         "Your password must contain at least one uppercase letter"
+//       );
+//       passwordError.css("display", "block");
+//       return false;
+//     } else if (!passwordValue.match(/[a-z]/)) {
+//       passwordError.text(
+//         "Your password must contain at least one lowercase letter"
+//       );
+//       passwordError.css("display", "block");
+//       return false;
+//     } else if (!passwordValue.match(/[0-9]/)) {
+//       passwordError.text("Your password must contain at least one number");
+//       passwordError.css("display", "block");
+//       return false;
+//     } else if (passwordValue.match(/\s/)) {
+//       passwordError.text("Your password must not contain any spaces");
+//       passwordError.css("display", "block");
+//       return false;
+//     } else {
+//       passwordError.css("display", "none");
+//       return true;
+//     }
+//   }
+
+//   function checkPhone() {
+//     const phoneValue = phone.val().trim();
+//     if (phoneValue === "") {
+//       phoneError.text("Phone cannot be blank");
+//       phoneError.css("display", "block");
+//       return false;
+//     } else if (!isPhone(phoneValue)) {
+//       phoneError.text("Phone format is incorrect");
+//       phoneError.css("display", "block");
+//       return false;
+//     } else {
+//       phoneError.css("display", "none");
+//       return true;
+//     }
+//   }
+
+//   function isPhone(phone) {
+//     return /^(\+90|0)?[0-9]{10}$/.test(phone);
+//   }
+
+//   function checkPasswordConfirm() {
+//     const passwordValue = signupPassword.val().trim();
+//     const passwordConfirmValue = signupPasswordConf.val().trim();
+//     if (passwordValue !== passwordConfirmValue) {
+//       passwordConfError.text("Passwords do not match");
+//       passwordConfError.css("display", "block");
+//       return false;
+//     } else {
+//       passwordConfError.css("display", "none");
+//       return true;
+//     }
+//   }
+
+//   function checkAgreement() {
+//     if (!agreement.is(":checked")) {
+//       agreementError.text("You must accept the agreement");
+//       agreementError.css("display", "block");
+//       return false;
+//     } else {
+//       agreementError.css("display", "none");
+//       return true;
+//     }
+//   }
+
+//   function registerUser() {
+//     const nameValue = name.val().trim();
+//     const emailValue = signupEmail.val().trim();
+//     const passwordValue = signupPassword.val().trim();
+//     const phoneValue = phone.val().trim();
+//     const newUser = {
+//       id: users.length + 1,
+//       name: nameValue,
+//       email: emailValue,
+//       password: passwordValue,
+//       phone: phoneValue,
+//     };
+//     users.push(newUser);
+//     localStorage.setItem("users", JSON.stringify(users));
+//   }
+
+//   function saveUser() {
+//     const logEmailValue = logEmail.val().trim();
+//     localStorage.setItem("email", logEmailValue);
+//   }
+
+//   function isLoggedIn() {
+//     return localStorage.getItem("email") !== null;
+//   }
+
+//   function logoutUser() {
+//     localStorage.removeItem("email");
+//     window.location.href = "index.html";
+//     $(".login-link").css("display", "block");
+//     $(".signup-link").css("display", "block");
+//     $(".logout-link").css("display", "none");
+//     $(".user-link").css("display", "none");
+//   }
+
+//   function checkLoginEmail() {
+//     const logEmailValue = logEmail.val().trim();
+//     if (logEmailValue === "") {
+//       emailError.text("Email cannot be blank");
+//       emailError.css("display", "block");
+//       return false;
+//     } else if (matchesEmail(logEmailValue) === false) {
+//       emailError.text("Email does not exist");
+//       emailError.css("display", "block");
+//       return false;
+//     } else {
+//       emailError.css("display", "none");
+//       return true;
+//     }
+//   }
+
+//   function checkLoginPassword() {
+//     const logPasswordValue = logPassword.val().trim();
+//     const logEmailValue = logEmail.val().trim();
+//     if (matchesPassword(logEmailValue, logPasswordValue) === false) {
+//       passwordError.text("Password is incorrect");
+//       passwordError.css("display", "block");
+//       return false;
+//     } else if (logPasswordValue === "") {
+//       passwordError.text("Password cannot be blank");
+//       passwordError.css("display", "block");
+//       return false;
+//     } else {
+//       emailError.css("display", "none");
+//       passwordError.css("display", "none");
+//       return true;
+//     }
+//   }
+
+//   function matchesEmail(email) {
+//     users = JSON.parse(localStorage.getItem("users"));
+//     for (let i = 0; i < users.length; i++) {
+//       if (users[i].email == email) {
+//         return true;
+//       }
+//     }
+
+//     return false;
+//   }
+
+//   function matchesPassword(logEmail, logPassword) {
+//     for (let i = 0; i < users.length; i++) {
+//       if (users[i].email == logEmail && users[i].password === logPassword) {
+//         return true;
+//       }
+//     }
+
+//     return false;
+//   }
+
+//   signupForm.on("submit", (e) => {
+//     e.preventDefault();
+//     checkName();
+//     checkEmail();
+//     checkPassword();
+//     checkPhone();
+//     checkPasswordConfirm();
+//     checkAgreement();
+//     if (
+//       checkName() &&
+//       checkEmail() &&
+//       checkPassword() &&
+//       checkPhone() &&
+//       checkPasswordConfirm() &&
+//       checkAgreement()
+//     ) {
+//       registerUser();
+//       window.location.href = "login.html";
+//     }
+//   });
+
+//   window.onload = () => {
+//     if (isLoggedIn()) {
+//       $(".login-link").css("display", "none");
+//       $(".signup-link").css("display", "none");
+//       $(".logout-link").css("display", "block");
+//       $(".user-link").css("display", "block");
+//       const users = JSON.parse(localStorage.getItem("users"));
+//       const email = localStorage.getItem("email");
+//       for (let i = 0; i < users.length; i++) {
+//         if (users[i].email == email) {
+//           $(".user-link a").html(users[i].name);
+//         }
+//       }
+
+//     } else {
+//       $(".login-link").css("display", "block");
+//       $(".signup-link").css("display", "block");
+//       $(".logout-link").css("display", "none");
+//       $(".user-link").css("display", "none");
+//     }
+//   };
+
+//   loginForm.on("submit", (e) => {
+//     e.preventDefault();
+//     checkLoginEmail();
+//     checkLoginPassword();
+//     if (checkLoginEmail() && checkLoginPassword()) {
+//       saveUser();
+//       window.location.href = "index.html";
+//     }
+//   });
+
+//   logout.on("click", () => {
+//     logoutUser();
+//   });
+
+// });

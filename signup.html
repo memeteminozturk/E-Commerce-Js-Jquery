@@ -34,32 +34,38 @@
                         <h1>SIGN UP</h1>
                     </div>
                     <div class="col-12">
-                        <form action="">
+                        <form action="" id="signup-form" novalidate>
                             <div class="row">
                                 <div class="col-12 input-field">
-                                    <label for="username">Username</label>
-                                    <input type="text" name="username" id="username" placeholder="Username"
-                                        class="username">
+                                    <label for="name">Your Name</label>
+                                    <input type="text" name="name" id="name" placeholder="Your Name" class="name">
+                                    <div id="name-error" class="error"></div>
                                 </div>
                                 <div class="col-12 input-field">
                                     <label for="email">Email</label>
                                     <input type="email" name="email" id="email" placeholder="Email" class="email">
+                                    <div id="email-error" class="error"></div>
                                 </div>
                                 <div class="col-12 input-field">
                                     <label for="phone">Phone</label>
                                     <input type="text" name="phone" id="phone" placeholder="Phone" class="phone">
+                                    <div id="phone-error" class="error"></div>
                                 </div>
                                 <div class="col-12 input-field">
                                     <label for="password">Password</label>
                                     <input type="password" name="password" id="password" placeholder="Password"
                                         class="password">
+                                    <i class="fa fa-eye" id="toggle-password"></i>
+                                    <div id="password-error" class="error"></div>
                                 </div>
                                 <div class="col-12 input-field">
-                                    <label for="password">Password Confirm</label>
-                                    <input type="password" name="password" id="password" placeholder="Password Confirm"
-                                        class="password">
+                                    <label for="password-conf">Password Confirm</label>
+                                    <input type="password" name="password-conf" id="password-conf"
+                                        placeholder="Password Confirm" class="password">
+                                    <div id="password-conf-error" class="error"></div>
                                 </div>
                                 <div class="col-12 agreement-field">
+                                    <div id="agreement-error" class="error"></div>
                                     <input type="checkbox" name="agreement" id="agreement">
                                     <label for="agreement">By Creating an account, you agree to our <a href="">User
                                             Agreement</a> and acknowledge reading our <a href="">User Privacy Notice

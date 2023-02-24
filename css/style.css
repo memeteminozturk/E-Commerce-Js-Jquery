@@ -432,6 +432,11 @@ body {
     border-top-right-radius: 10px;
 }
 
+.user-link,
+.logout-link {
+    display:none;
+}
+
 
 
   
