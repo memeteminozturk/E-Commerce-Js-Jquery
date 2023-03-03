@@ -20,7 +20,7 @@ img {
 
 body {
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(rgba(2, 1, 13, 0.5), rgba(0, 0, 0, 0.5)), url("../assets/img/background.jpg");
+    background: linear-gradient(rgba(191, 188, 229, 0.5), rgba(0, 0, 0, 0.5)), url("../assets/img/background.jpg");
     min-height: 100vh;
 }
 
@@ -49,7 +49,6 @@ body {
     color: #741138;
     text-decoration: none;
     font-family: 'Poppins', sans-serif;
-    text-shadow: 0 0 10px rgba(39, 33, 81, 0.5);
 }
 .navbar {
     position: fixed;
@@ -354,7 +353,7 @@ body {
     margin: 0px 8px;
 }
 
-.cart-info{
+.cart-info-area{
     background-color: #efc8b1;
     padding: 2rem 1rem;
     border-radius: 10px;
@@ -435,6 +434,80 @@ body {
 .user-link,
 .logout-link {
     display:none;
+}
+
+.form-control{
+    width: 300px;
+    margin: 0 auto;
+}
+
+.coupon-title h3{
+    font-size: 20px;
+    font-weight: 600;
+    color: #741138;
+    margin: 0;
+}
+
+.coupon-input{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 400px;
+}
+
+.coupon-input input{
+    width: 300px;
+    height: 50px;
+    border: 1px solid #741138;
+    border-right: none;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    padding: 0 10px;
+    background-color: #f5f5f5;
+}
+
+.coupon-input input:focus{
+    outline: none;
+    background-color: white;
+}
+
+.coupon-input button{
+    width: 100px;
+    height: 50px;
+    border: 1px solid #741138;
+    border-left: none;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    background-color: #741138;
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.coupon-input button:hover{
+    background-color: #d30054;
+}
+
+.coupon-error{
+    background-color: white;
+    width: 400px;
+    padding: 10px;
+    border: 1px solid #741138;
+    border-radius: 5px;
+    margin-top: 10px;
+    display: none;
+}
+
+.error{
+    color: #ff0000;
+    font-size: 0.8rem;
+    margin-top: 5px;
+}
+
+.success{
+    color: #55b455;
+    font-size: 0.8rem;
+    margin-top: 5px;
 }
 
 

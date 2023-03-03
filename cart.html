@@ -21,6 +21,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!--        CUSTOM CSS       -->
     <link rel="stylesheet" href="css/style.css">
+    <!--        NOTIFY JS        -->
+    <script src="js/plugins/notify.min.js"></script>
     <!--        CUSTOM JS       -->
     <script src="js/index.js"></script>
 </head>
@@ -83,10 +85,21 @@
                 </div>
                 <div class="col-md-9">
                     <div class="cart-items"></div>
+                    <div class="coupon-area">
+                        <div class="coupon-title">
+                            <h3>COUPON</h3>
+                        </div>
+                        <div class="coupon-input">
+                            <input type="text" placeholder="Enter your coupon code" id="coupon" >
+                            <button id="coupon-btn">Apply</button>
+                        </div>
+                        <div class="coupon-error"></div>
+                    </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="cart-info">
-
+                    <div class="cart-info-area">
+                        <div class="cart-info"></div>
+                        <div class="coupon-info"></div>
                     </div>
                 </div>
 

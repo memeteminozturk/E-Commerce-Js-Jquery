@@ -1,9 +1,11 @@
 $(() => {
   var productsDom = $(".products");
-  $.getJSON("products.json", (products) => {
+  var products = [];
+  $.getJSON("products.json", (productss) => {
+    products = productss;
     products.forEach((product) => {
       productsDom.append(`
-        <div class="col-md-3">
+        <div class="col-lg-3 col-md-4 col-sm-6">
             <div class="product">
             <div class="product-image">
                 <img src="${product.image}"/>
@@ -19,7 +21,7 @@ $(() => {
 
   let cart = [];
   const cartDom = $(".cart .container .row .cart-items");
-  const cartInfoDom = $(".cart-info");
+  const cartInfoDom = $(".cart-info-area .cart-info");
   const cartTotalDom = $(".cart-total");
   const cartCountDom = $(".cart-count");
   const miniCartDom = $(".mini-cart-content .container .row .mini-cart-items");
@@ -49,8 +51,9 @@ $(() => {
         miniCartCountDom.text(cartCount);
         cartTotalDom.text("BORCUNUZ " + cartTotal.toFixed(2) + " TL");
         miniCartTotalDom.text(cartTotal.toFixed(2) + " TL");
+        $.notify("Product added to cart", "success");
       } else {
-        alert("Insufficient stock for the quantity entered");
+        $.notify("Insufficient stock for the quantity entered", "error");
       }
     } else {
       cart.push(product);
@@ -61,6 +64,7 @@ $(() => {
       cartCountDom.text(cartCount);
       miniCartCountDom.text(cartCount);
       miniCartTotalDom.text(cartTotal.toFixed(2) + " TL");
+      $.notify("Product added to cart", "success");
     }
   }
 
@@ -73,6 +77,7 @@ $(() => {
     cartCountDom.text(cartCount);
     miniCartCountDom.text(cartCount);
     miniCartTotalDom.text(cartTotal.toFixed(2) + " TL");
+    $.notify("Product deleted from cart", "error");
   }
 
   function displayCart() {
@@ -81,6 +86,7 @@ $(() => {
       cartDom.html("");
       $(".mini-cart-total-section").css("display", "none");
       cartInfoDom.html(`<h2 class="cart-info-empty">Your cart is empty</h2>`);
+      $(".coupon-area").css("display", "none");
     } else {
       $(".mini-cart-total-section").css("display", "flex");
       cartDom.html("");
@@ -157,21 +163,6 @@ $(() => {
       alert("Insufficient stock for the quantity entered");
     }
   }
-
-  // window.onload = function () {
-  //   if (localStorage.getItem("shoppingCart")) {
-  //     cart = JSON.parse(localStorage.getItem("shoppingCart"));
-  //     cart.map((item) => {
-  //       cartTotal += parseFloat(item.price) * item.productAmount;
-  //       cartCount += item.productAmount;
-  //       cartTotalDom.text("BORCUNUZ " + cartTotal.toFixed(2) + " TL");
-  //       cartCountDom.text(cartCount);
-  //       miniCartCountDom.text(cartCount);
-  //       miniCartTotalDom.text(cartTotal.toFixed(2) + " TL");
-  //     });
-  //   }
-  //   displayCart();
-  // };
 
   $(".mini-cart-content .container .row .mini-cart-items").on(
     "click",
@@ -279,7 +270,6 @@ $(() => {
     }
   );
 
-
   const name = $("#name");
   const signupEmail = $("#signup-form #email");
   const signupPassword = $("#signup-form #password");
@@ -292,7 +282,76 @@ $(() => {
   const agreementError = $("#agreement-error");
   const signupForm = $("#signup-form");
 
-  // LOGIN PAGE
+  /*****************COUPON****************** */
+  const coupon = $("#coupon");
+  const couponError = $(".coupon-error");
+  const couponBtn = $("#coupon-btn");
+  const couponInfoDom = $(".coupon-info");
+  const coupons = [
+    {
+      code: "emin10",
+      discount: 10,
+    },
+    {
+      code: "muazzez20",
+      discount: 20,
+    },
+    {
+      code: "sümbül50",
+      discount: 50,
+    },
+    {
+      code: "test30",
+      discount: 30,
+    },
+  ];
+
+  couponBtn.on("click", function () {
+    const couponValue = coupon.val().trim();
+    if (couponValue === "") {
+      couponError.text("Coupon cannot be blank");
+      couponError.removeClass("success");
+      couponError.addClass("error");
+      couponError.show();
+      couponInfoDom.html("");
+      return false;
+    }
+    for (let i = 0; i < coupons.length ; i++) {
+      if (couponValue === coupons[i].code) {
+        couponError.css("display", "block");
+        couponError.text("Coupon applied");
+        couponError.removeClass("error");
+        couponError.addClass("success");
+        couponInfoDom.html(
+          ` <div class="cart-info-item">
+              <p class="cart-info-title"> Coupon: </p>
+              <p class="cart-info-value">${coupons[i].code}</p>
+          </div>
+          <div class="cart-info-item">
+              <p class="cart-info-title"> Discount: </p>
+               <p class="cart-info-value">${coupons[i].discount}%</p>
+          </div>
+          <div class="cart-info-item">
+              <p class="cart-info-title"> New Total: </p>
+               <p class="cart-info-value">${(
+                 cartTotal -
+                 (cartTotal * coupons[i].discount) / 100
+               ).toFixed(2)}</p>
+          </div>
+           `
+        );
+        return true;
+      } else {
+        couponError.text("Invalid coupon");
+        couponError.css("display", "block");
+        couponError.removeClass("success");
+        couponError.addClass("error");
+        couponInfoDom.html("");
+      }
+    }
+  });
+
+  // ********************LOGIN PAGE***************************
   const togglePassword = $("#toggle-password");
   const logPassword = $("#login-form #password");
   const password = $("#password");
@@ -406,8 +465,8 @@ $(() => {
       phoneError.text("Phone cannot be blank");
       phoneError.css("display", "block");
       return false;
-    } else if (!isPhone(phoneValue)) {
-      phoneError.text("Phone format is incorrect");
+    } else if (phoneValue.length < 15) {
+      phoneError.text("Phone format is short");
       phoneError.css("display", "block");
       return false;
     } else {
@@ -550,8 +609,11 @@ $(() => {
       checkPasswordConfirm() &&
       checkAgreement()
     ) {
-      registerUser();
-      window.location.href = "login.html";
+      $.notify("You have successfully registered", "success");
+      setTimeout(() => {
+        registerUser();
+        window.location.href = "login.html";
+      }, 1500);
     }
   });
 
@@ -609,320 +671,51 @@ $(() => {
   logout.on("click", () => {
     logoutUser();
   });
+
+  //PRODUCT INPUT FILTER
+
+  const searchInput = $(".search-input");
+
+  searchInput.on("input", (e) => {
+    const searchValue = searchInput.val().trim();
+    const filteredProducts = products.filter((product) => {
+      return product.title.toLowerCase().includes(searchValue.toLowerCase());
+    });
+    displayProducts(filteredProducts);
+  });
+
+  function displayProducts(products) {
+    productsDom.html("");
+    products.map((product) => {
+      productsDom.append(`
+        <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="product">
+            <div class="product-image">
+                <img src="${product.image}"/>
+                <div class="product-stock">Stock ${product.stock}</div>
+            </div>
+                <h2 class="product-title" title="${product.title}">${product.title}</h2>
+                <p class="product-price">${product.price} TL</p>
+                <a class="btn w-100">Add to Cart</a>
+            </div>
+        </div>`);
+    });
+  }
+
+  // PHONE NUMBER MASK
+  if (document.querySelector("#phone")) {
+    document.getElementById("phone").addEventListener("input", function (e) {
+      var x = e.target.value
+        .replace(/\D/g, "")
+        .match(/(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/);
+      e.target.value = !x[2]
+        ? x[1]
+        : "(" +
+          x[1] +
+          ") " +
+          x[2] +
+          (x[3] ? " " + x[3] : "") +
+          (x[4] ? " " + x[4] : "");
+    });
+  }
 });
-
-// LOGIN - SIGNUP PAGE
-// $(document).ready(function () {
-//   // SIGNUP PAGE
-//   let users = [];
-//   const name = $("#name");
-//   const signupEmail = $("#signup-form #email");
-//   const signupPassword = $("#signup-form #password");
-//   const signupPasswordConf = $("#signup-form #password-conf");
-//   const passwordConfError = $("#password-conf-error");
-//   const nameError = $("#name-error");
-//   const phone = $("#phone");
-//   const phoneError = $("#phone-error");
-//   const agreement = $("#agreement");
-//   const agreementError = $("#agreement-error");
-//   const signupForm = $("#signup-form");
-
-//   // LOGIN PAGE
-//   const togglePassword = $("#toggle-password");
-//   const logPassword = $("#login-form #password");
-//   const password = $("#password");
-
-//   togglePassword.on("click", function () {
-//     const type = password.attr("type") === "password" ? "text" : "password";
-//     password.attr("type", type);
-//     $(this).toggleClass("fa-eye-slash");
-//   });
-
-//   // INPUT VALIDATION
-//   const logEmail = $("#login-form #email");
-//   const loginForm = $("#login-form");
-//   const emailError = $("#email-error");
-//   const passwordError = $("#password-error");
-//   const logout = $(".logout-link");
-
-//   //CHECK NAME INPUT
-//   function checkName() {
-//     const nameValue = name.val().trim();
-//     if (nameValue === "") {
-//       nameError.text("Name cannot be blank");
-//       nameError.css("display", "block");
-//       return false;
-//     } else {
-//       nameError.css("display", "none");
-//       return true;
-//     }
-//   }
-
-//   function checkEmail() {
-//     const emailValue = signupEmail.val().trim();
-//     if (emailValue === "") {
-//       emailError.text("Email cannot be blank");
-//       emailError.css("display", "block");
-//       return false;
-//     } else if (!isEmail(emailValue)) {
-//       emailError.text("Email format is incorrect");
-//       emailError.css("display", "block");
-//       return false;
-//     } else if (emailExists(emailValue)) {
-//       emailError.text("Email already exists");
-//       emailError.css("display", "block");
-//       return false;
-//     } else {
-//       emailError.css("display", "none");
-//       return true;
-//     }
-//   }
-
-//   function emailExists(emailValue) {
-//     users = JSON.parse(localStorage.getItem("users"));
-//     if (users) {
-//       for (user of users) {
-//         if (user.email === emailValue) {
-//           return true;
-//         }
-//       }
-//     } else {
-//       return false;
-//     }
-//   }
-
-//   function isEmail(signupEmail) {
-//     return /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(signupEmail);
-//   }
-
-//   function checkPassword() {
-//     const passwordValue = signupPassword.val().trim();
-//     if (passwordValue === "") {
-//       passwordError.text("Password cannot be blank");
-//       passwordError.css("display", "block");
-//       return false;
-//     } else if (passwordValue.length < 6) {
-//       passwordError.text("Your password must be at least 6 characters");
-//       passwordError.css("display", "block");
-//       return false;
-//     } else if (passwordValue.length > 20) {
-//       passwordError.text("Your password must be less than 20 characters");
-//       passwordError.css("display", "block");
-//       return false;
-//     } else if (!passwordValue.match(/[A-Z]/)) {
-//       passwordError.text(
-//         "Your password must contain at least one uppercase letter"
-//       );
-//       passwordError.css("display", "block");
-//       return false;
-//     } else if (!passwordValue.match(/[a-z]/)) {
-//       passwordError.text(
-//         "Your password must contain at least one lowercase letter"
-//       );
-//       passwordError.css("display", "block");
-//       return false;
-//     } else if (!passwordValue.match(/[0-9]/)) {
-//       passwordError.text("Your password must contain at least one number");
-//       passwordError.css("display", "block");
-//       return false;
-//     } else if (passwordValue.match(/\s/)) {
-//       passwordError.text("Your password must not contain any spaces");
-//       passwordError.css("display", "block");
-//       return false;
-//     } else {
-//       passwordError.css("display", "none");
-//       return true;
-//     }
-//   }
-
-//   function checkPhone() {
-//     const phoneValue = phone.val().trim();
-//     if (phoneValue === "") {
-//       phoneError.text("Phone cannot be blank");
-//       phoneError.css("display", "block");
-//       return false;
-//     } else if (!isPhone(phoneValue)) {
-//       phoneError.text("Phone format is incorrect");
-//       phoneError.css("display", "block");
-//       return false;
-//     } else {
-//       phoneError.css("display", "none");
-//       return true;
-//     }
-//   }
-
-//   function isPhone(phone) {
-//     return /^(\+90|0)?[0-9]{10}$/.test(phone);
-//   }
-
-//   function checkPasswordConfirm() {
-//     const passwordValue = signupPassword.val().trim();
-//     const passwordConfirmValue = signupPasswordConf.val().trim();
-//     if (passwordValue !== passwordConfirmValue) {
-//       passwordConfError.text("Passwords do not match");
-//       passwordConfError.css("display", "block");
-//       return false;
-//     } else {
-//       passwordConfError.css("display", "none");
-//       return true;
-//     }
-//   }
-
-//   function checkAgreement() {
-//     if (!agreement.is(":checked")) {
-//       agreementError.text("You must accept the agreement");
-//       agreementError.css("display", "block");
-//       return false;
-//     } else {
-//       agreementError.css("display", "none");
-//       return true;
-//     }
-//   }
-
-//   function registerUser() {
-//     const nameValue = name.val().trim();
-//     const emailValue = signupEmail.val().trim();
-//     const passwordValue = signupPassword.val().trim();
-//     const phoneValue = phone.val().trim();
-//     const newUser = {
-//       id: users.length + 1,
-//       name: nameValue,
-//       email: emailValue,
-//       password: passwordValue,
-//       phone: phoneValue,
-//     };
-//     users.push(newUser);
-//     localStorage.setItem("users", JSON.stringify(users));
-//   }
-
-//   function saveUser() {
-//     const logEmailValue = logEmail.val().trim();
-//     localStorage.setItem("email", logEmailValue);
-//   }
-
-//   function isLoggedIn() {
-//     return localStorage.getItem("email") !== null;
-//   }
-
-//   function logoutUser() {
-//     localStorage.removeItem("email");
-//     window.location.href = "index.html";
-//     $(".login-link").css("display", "block");
-//     $(".signup-link").css("display", "block");
-//     $(".logout-link").css("display", "none");
-//     $(".user-link").css("display", "none");
-//   }
-
-//   function checkLoginEmail() {
-//     const logEmailValue = logEmail.val().trim();
-//     if (logEmailValue === "") {
-//       emailError.text("Email cannot be blank");
-//       emailError.css("display", "block");
-//       return false;
-//     } else if (matchesEmail(logEmailValue) === false) {
-//       emailError.text("Email does not exist");
-//       emailError.css("display", "block");
-//       return false;
-//     } else {
-//       emailError.css("display", "none");
-//       return true;
-//     }
-//   }
-
-//   function checkLoginPassword() {
-//     const logPasswordValue = logPassword.val().trim();
-//     const logEmailValue = logEmail.val().trim();
-//     if (matchesPassword(logEmailValue, logPasswordValue) === false) {
-//       passwordError.text("Password is incorrect");
-//       passwordError.css("display", "block");
-//       return false;
-//     } else if (logPasswordValue === "") {
-//       passwordError.text("Password cannot be blank");
-//       passwordError.css("display", "block");
-//       return false;
-//     } else {
-//       emailError.css("display", "none");
-//       passwordError.css("display", "none");
-//       return true;
-//     }
-//   }
-
-//   function matchesEmail(email) {
-//     users = JSON.parse(localStorage.getItem("users"));
-//     for (let i = 0; i < users.length; i++) {
-//       if (users[i].email == email) {
-//         return true;
-//       }
-//     }
-
-//     return false;
-//   }
-
-//   function matchesPassword(logEmail, logPassword) {
-//     for (let i = 0; i < users.length; i++) {
-//       if (users[i].email == logEmail && users[i].password === logPassword) {
-//         return true;
-//       }
-//     }
-
-//     return false;
-//   }
-
-//   signupForm.on("submit", (e) => {
-//     e.preventDefault();
-//     checkName();
-//     checkEmail();
-//     checkPassword();
-//     checkPhone();
-//     checkPasswordConfirm();
-//     checkAgreement();
-//     if (
-//       checkName() &&
-//       checkEmail() &&
-//       checkPassword() &&
-//       checkPhone() &&
-//       checkPasswordConfirm() &&
-//       checkAgreement()
-//     ) {
-//       registerUser();
-//       window.location.href = "login.html";
-//     }
-//   });
-
-//   window.onload = () => {
-//     if (isLoggedIn()) {
-//       $(".login-link").css("display", "none");
-//       $(".signup-link").css("display", "none");
-//       $(".logout-link").css("display", "block");
-//       $(".user-link").css("display", "block");
-//       const users = JSON.parse(localStorage.getItem("users"));
-//       const email = localStorage.getItem("email");
-//       for (let i = 0; i < users.length; i++) {
-//         if (users[i].email == email) {
-//           $(".user-link a").html(users[i].name);
-//         }
-//       }
-
-//     } else {
-//       $(".login-link").css("display", "block");
-//       $(".signup-link").css("display", "block");
-//       $(".logout-link").css("display", "none");
-//       $(".user-link").css("display", "none");
-//     }
-//   };
-
-//   loginForm.on("submit", (e) => {
-//     e.preventDefault();
-//     checkLoginEmail();
-//     checkLoginPassword();
-//     if (checkLoginEmail() && checkLoginPassword()) {
-//       saveUser();
-//       window.location.href = "index.html";
-//     }
-//   });
-
-//   logout.on("click", () => {
-//     logoutUser();
-//   });
-
-// });
