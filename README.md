@@ -1,5 +1,5 @@
 Shopping Cart  with js and jquery 
-You can see the website from here: 
+You can see the website from here: <br/>
 https://memeteminozturk.github.io/Shopping-Cart-Js-Jquery/
 
 Features:
