@@ -1,8 +1,19 @@
-# Shopping-Cart-Js-Jquery
 Shopping Cart  with js and jquery 
-You can see the website from here: https://memeteminozturk.github.io/Shopping-Cart-Js-Jquery/
+You can see the website from here: 
+https://memeteminozturk.github.io/Shopping-Cart-Js-Jquery/
 
-When you add a product to cart you can display and edit your cart quickly just by hovering cart icon placed top right
+Features:
+You can signup and login.
+When you add a product to the cart you can display and edit your cart quickly just by hovering cart icon placed top right.
+You can use coupons that given below.
+You cant add product more than its stock.
+
+available coupons: 
+emin10
+muazzez20
+sümbül50
+test30
+
 
 
 
