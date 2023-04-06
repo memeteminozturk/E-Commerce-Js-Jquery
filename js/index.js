@@ -316,7 +316,7 @@ $(() => {
       couponInfoDom.html("");
       return false;
     }
-    for (let i = 0; i < coupons.length ; i++) {
+    for (let i = 0; i < coupons.length; i++) {
       if (couponValue === coupons[i].code) {
         couponError.css("display", "block");
         couponError.text("Coupon applied");
@@ -653,10 +653,11 @@ $(() => {
     displayCart();
   }
 
-  window.onload = () => {
-    windowLoad();
-    windowLoad2();
-  };
+  // sayfa yüklendiğinde çalışacak fonksiyonlar
+  windowLoad();
+  windowLoad2();
+  
+
 
   loginForm.on("submit", (e) => {
     e.preventDefault();

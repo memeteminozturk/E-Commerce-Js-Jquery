@@ -11,7 +11,7 @@
     color: #fff;
 }
 
-img {
+.product-image img {
     width: 100%;
     mix-blend-mode: multiply;
     height: 297px;
@@ -20,7 +20,7 @@ img {
 
 body {
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(rgba(191, 188, 229, 0.5), rgba(0, 0, 0, 0.5)), url("../assets/img/background.jpg");
+    background: linear-gradient( #941d4d52, #45053b65);
     min-height: 100vh;
 }
 
@@ -55,7 +55,7 @@ body {
     width: 100%;
     top: 0;
     z-index: 999;
-    background: linear-gradient(rgba(236, 236, 236, 0.8), rgba(153, 156, 156, 0.8)), url("../assets/img/background.jpg");
+    background-color: #fff;
 }
 
 .navbar-collapse {
@@ -82,12 +82,11 @@ body {
     margin: 20px auto;
     padding: 1rem;
     background-color: rgb(255, 255, 255);
-    border-radius: 10px;
 }
 
 .product-title {
     font-size: 18px;
-    font-weight: 600;
+    font-weight: 300;
     margin: 1rem 0;
     white-space: nowrap;
     overflow: hidden;
@@ -114,12 +113,12 @@ body {
 }
 
 .nav-item i:hover {
-    color: #2a2356 ;
-    text-shadow: 0 0 10px rgba(39, 33, 81, 0.5);
+    color: #741138 ;
+    text-shadow: 0 0 10px #741138;
 }
 .nav-link:hover {
-    color: #043d3f !important ;
-    text-shadow: 0 0 10px rgba(39, 33, 81, 0.8);
+    color: #741138 !important ;
+    text-shadow: 0 0 10px #741138;
 }
 
 .nav-item a:hover~.mini-cart-content,
@@ -243,7 +242,7 @@ body {
     color: #efc8b1 ;
     font-size: 16px;
     font-weight: 600;
-    border-radius: 5px;
+    border-radius: 3px;
     text-decoration: none;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -420,15 +419,14 @@ body {
 
 .product-stock{
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 500;
     color: #741138;
     margin: 0;
     position: absolute;
-    top: -16px;
-    right: -16px;
+    top: 0px;
+    right: 0px;
     background-color: #efc8b1;
-    padding: 5px 10px;
-    border-top-right-radius: 10px;
+    padding:0 5px;
 }
 
 .user-link,
