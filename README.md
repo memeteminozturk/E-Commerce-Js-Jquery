@@ -1,6 +1,6 @@
  <h3>Shopping Cart  with js and jquery</h1>
 <strong>You can see the website from here:</strong> <br/>
-https://memeteminozturk.github.io/Shopping-Cart-Js-Jquery/
+https://memeteminozturk.github.io/E-Commerce-Js-Jquery/
 
 <h4>Features:</h4>
 You can signup and login.<br/>
@@ -9,9 +9,9 @@ You can use coupons that given below.<br/>
 You cant add product more than its stock.<br/>
 
 <h4>available coupons: </h4>
-emin10<br/>
-muazzez20<br/>
 sümbül50<br/>
+muazzez20<br/>
+emin10<br/>
 test30<br/>
 
 
