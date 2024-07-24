@@ -19,7 +19,7 @@ body{
 .signup-container{
     width: 100%;
     min-height: 100vh;
-    padding-top: 30px ;
+    padding-block: 30px ;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -54,6 +54,7 @@ body{
     margin-bottom: 20px;
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 
 .login .input-field label,

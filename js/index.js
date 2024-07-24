@@ -1,22 +1,24 @@
 $(() => {
   var productsDom = $(".products");
-  var products = [];
-  $.getJSON("products.json", (productss) => {
-    products = productss;
-    products.forEach((product) => {
-      productsDom.append(`
+  
+  $.getJSON("products.json", function (products) {
+  localStorage.setItem("products", JSON.stringify(products));
+  products.forEach((product) => {
+    productsDom.append(`
         <div class="col-lg-3 col-md-4 col-sm-6">
             <div class="product">
             <div class="product-image">
                 <img src="${product.image}"/>
-                <div class="product-stock">Stock ${product.stock}</div>
+                <div class="product-stock">Stok ${product.stock}</div>
             </div>
+            <div class="product-info">
                 <h2 class="product-title" title="${product.title}">${product.title}</h2>
                 <p class="product-price">${product.price} TL</p>
-                <a class="btn w-100">Add to Cart</a>
+            </div>
+                <a class="btn w-100">Sepete Ekle</a>
             </div>
         </div>`);
-    });
+  });
   });
 
   let cart = [];
@@ -24,7 +26,7 @@ $(() => {
   const cartInfoDom = $(".cart-info-area .cart-info");
   const cartTotalDom = $(".cart-total");
   const cartCountDom = $(".cart-count");
-  const miniCartDom = $(".mini-cart-content .container .row .mini-cart-items");
+  const miniCartDom = $(".mini-cart-content .mini-cart-items");
   const miniCartCountDom = $(".mini-cart-count");
   const miniCartTotalDom = $(".mini-cart-total");
   const miniCartItemDelete = $(".mini-cart-item-delete");
@@ -51,9 +53,9 @@ $(() => {
         miniCartCountDom.text(cartCount);
         cartTotalDom.text("BORCUNUZ " + cartTotal.toFixed(2) + " TL");
         miniCartTotalDom.text(cartTotal.toFixed(2) + " TL");
-        $.notify("Product added to cart", "success");
+        $.notify("Ürün sepete eklendi", "success");
       } else {
-        $.notify("Insufficient stock for the quantity entered", "error");
+        $.notify("Stokta yeterli ürün bulunmamaktadır", "error");
       }
     } else {
       cart.push(product);
@@ -64,7 +66,7 @@ $(() => {
       cartCountDom.text(cartCount);
       miniCartCountDom.text(cartCount);
       miniCartTotalDom.text(cartTotal.toFixed(2) + " TL");
-      $.notify("Product added to cart", "success");
+      $.notify("Ürün sepete eklendi", "success");
     }
   }
 
@@ -77,15 +79,15 @@ $(() => {
     cartCountDom.text(cartCount);
     miniCartCountDom.text(cartCount);
     miniCartTotalDom.text(cartTotal.toFixed(2) + " TL");
-    $.notify("Product deleted from cart", "error");
+    $.notify("Ürün sepetten silindi", "error");
   }
 
   function displayCart() {
     if (cart.length == 0) {
-      miniCartDom.html(`<h2 class="mini-cart-empty">Your cart is empty</h2>`);
+      miniCartDom.html(`<h2 class="mini-cart-empty">Sepetiniz boş</h2>`);
       cartDom.html("");
       $(".mini-cart-total-section").css("display", "none");
-      cartInfoDom.html(`<h2 class="cart-info-empty">Your cart is empty</h2>`);
+      cartInfoDom.html(`<h2 class="cart-info-empty">Sepetiniz boş</h2>`);
       $(".coupon-area").css("display", "none");
     } else {
       $(".mini-cart-total-section").css("display", "flex");
@@ -96,9 +98,11 @@ $(() => {
       <div class="cart-item">
       <img src="${item.image}"/>
       <h3 class="cart-item-title">${item.title}</h3>
-      <p class="cart-item-quantity"><span class="decrease">-</span> ${
-        item.productAmount
-      }<span class="increase">+</span></p>
+      <p class="cart-item-quantity">
+        <span class="decrease">-</span> 
+        <span class="cart-item-quantity-value">${item.productAmount}</span>
+        <span class="increase">+</span>
+      </p>
       <p class="cart-item-price">${item.price} TL</p>
       <p class="cart-item-total">${productTotal.toFixed(2)} TL</p>
       <i class="fa fa-trash cart-item-delete"></i>
@@ -107,13 +111,13 @@ $(() => {
       });
 
       cartInfoDom.html(`
-      <h2 class="cart-info-header">Cart Info</h2>
+      <h2 class="cart-info-header">Sepet Özeti</h2>
       <div class="cart-info-item">
-      <p class="cart-info-title">Total Product</p>
+      <p class="cart-info-title">Toplam Ürün :</p>
       <p class="cart-info-value">${cartCount}</p>
       </div>
       <div class="cart-info-item">
-      <p class="cart-info-title">Total Amount</p>
+      <p class="cart-info-title">Toplam Tutar :</p>
       <p class="cart-info-value">${cartTotal.toFixed(2)} TL</p>
       </div>
       `);
@@ -139,7 +143,7 @@ $(() => {
       product.productAmount -= 1;
       cartTotal -= parseFloat(product.price);
       cartCount -= 1;
-      cartTotalDom.text("TOTAL " + cartTotal.toFixed(2) + " TL");
+      cartTotalDom.text("TOPLAM " + cartTotal.toFixed(2) + " TL");
       cartCountDom.text(cartCount);
       miniCartCountDom.text(cartCount);
       miniCartTotalDom.text(cartTotal.toFixed(2) + " TL");
@@ -155,16 +159,16 @@ $(() => {
       product.productAmount += 1;
       cartTotal += parseFloat(product.price);
       cartCount += 1;
-      cartTotalDom.text("BORCUNUZ " + cartTotal.toFixed(2) + " TL");
+      cartTotalDom.text("TOPLAM " + cartTotal.toFixed(2) + " TL");
       cartCountDom.text(cartCount);
       miniCartCountDom.text(cartCount);
       miniCartTotalDom.text(cartTotal.toFixed(2) + " TL");
     } else {
-      alert("Insufficient stock for the quantity entered");
+      $.notify("Stokta yeterli ürün bulunmamaktadır", "error");
     }
   }
 
-  $(".mini-cart-content .container .row .mini-cart-items").on(
+  $(".mini-cart-content .mini-cart-items").on(
     "click",
     ".decrease",
     function () {
@@ -190,7 +194,7 @@ $(() => {
     saveLocalCart();
   });
 
-  $(".mini-cart-content .container .row .mini-cart-items").on(
+  $(".mini-cart-content .mini-cart-items").on(
     "click",
     ".increase",
     function () {
@@ -225,14 +229,14 @@ $(() => {
         .parent()
         .find(".product-stock")
         .text()
-        .replace("Stock ", ""),
+        .replace("Stok ", ""),
     };
     addToCart(product);
     displayCart();
     saveLocalCart();
   });
 
-  $(".mini-cart-content .container .row .mini-cart-items").on(
+  $(".mini-cart-content .mini-cart-items").on(
     "click",
     ".mini-cart-item-delete",
     function () {
@@ -306,10 +310,10 @@ $(() => {
     },
   ];
 
-  couponBtn.on("click", function () {
+  function checkCoupon() {
     const couponValue = coupon.val().trim();
     if (couponValue === "") {
-      couponError.text("Coupon cannot be blank");
+      couponError.text("Kupon alanı boş olamaz");
       couponError.removeClass("success");
       couponError.addClass("error");
       couponError.show();
@@ -319,37 +323,43 @@ $(() => {
     for (let i = 0; i < coupons.length; i++) {
       if (couponValue === coupons[i].code) {
         couponError.css("display", "block");
-        couponError.text("Coupon applied");
+        couponError.text("Kupon kodu geçerli");
         couponError.removeClass("error");
         couponError.addClass("success");
         couponInfoDom.html(
           ` <div class="cart-info-item">
-              <p class="cart-info-title"> Coupon: </p>
-              <p class="cart-info-value">${coupons[i].code}</p>
-          </div>
-          <div class="cart-info-item">
-              <p class="cart-info-title"> Discount: </p>
-               <p class="cart-info-value">${coupons[i].discount}%</p>
-          </div>
-          <div class="cart-info-item">
-              <p class="cart-info-title"> New Total: </p>
-               <p class="cart-info-value">${(
-                 cartTotal -
-                 (cartTotal * coupons[i].discount) / 100
-               ).toFixed(2)}</p>
-          </div>
-           `
+            <p class="cart-info-title"> Kupon: </p>
+            <p class="cart-info-value">${coupons[i].code}</p>
+        </div>
+        <div class="cart-info-item">
+            <p class="cart-info-title"> İndirim: </p>
+             <p class="cart-info-value">${coupons[i].discount}%</p>
+        </div>
+        <div class="cart-info-item">
+            <p class="cart-info-title"> Yeni Tutar: </p>
+             <p class="cart-info-value">${(
+            cartTotal -
+            (cartTotal * coupons[i].discount) / 100
+          ).toFixed(2)}</p>
+        </div>
+         `
         );
         return true;
       } else {
-        couponError.text("Invalid coupon");
+        couponError.text("Kupon kodu geçersiz");
         couponError.css("display", "block");
         couponError.removeClass("success");
         couponError.addClass("error");
         couponInfoDom.html("");
       }
     }
+  }
+
+  couponBtn.on("click", function () {
+    checkCoupon();
   });
+
+
 
   // ********************LOGIN PAGE***************************
   const togglePassword = $("#toggle-password");
@@ -385,15 +395,15 @@ $(() => {
   function checkEmail() {
     const emailValue = signupEmail.val().trim();
     if (emailValue === "") {
-      emailError.text("Email cannot be blank");
+      emailError.text("Email alanı boş olamaz");
       emailError.css("display", "block");
       return false;
     } else if (!isEmail(emailValue)) {
-      emailError.text("Email format is incorrect");
+      emailError.text("Email formatı hatalı");
       emailError.css("display", "block");
       return false;
     } else if (emailExists(emailValue)) {
-      emailError.text("Email already exists");
+      emailError.text("Email zaten kayıtlı");
       emailError.css("display", "block");
       return false;
     } else {
@@ -422,35 +432,31 @@ $(() => {
   function checkPassword() {
     const passwordValue = signupPassword.val().trim();
     if (passwordValue === "") {
-      passwordError.text("Password cannot be blank");
+      passwordError.text("Şifre boş olamaz");
       passwordError.css("display", "block");
       return false;
     } else if (passwordValue.length < 6) {
-      passwordError.text("Your password must be at least 6 characters");
+      passwordError.text("Şifreniz en az 6 karakter olmalıdır");
       passwordError.css("display", "block");
       return false;
     } else if (passwordValue.length > 20) {
-      passwordError.text("Your password must be less than 20 characters");
+      passwordError.text("Şifreniz 20 karakterden fazla olmamalıdır");
       passwordError.css("display", "block");
       return false;
     } else if (!passwordValue.match(/[A-Z]/)) {
-      passwordError.text(
-        "Your password must contain at least one uppercase letter"
-      );
+      passwordError.text("Şifreniz en az bir büyük harf içermelidir");
       passwordError.css("display", "block");
       return false;
     } else if (!passwordValue.match(/[a-z]/)) {
-      passwordError.text(
-        "Your password must contain at least one lowercase letter"
-      );
+      passwordError.text("Şifreniz en az bir küçük harf içermelidir");
       passwordError.css("display", "block");
       return false;
     } else if (!passwordValue.match(/[0-9]/)) {
-      passwordError.text("Your password must contain at least one number");
+      passwordError.text("Şifreniz en az bir rakam içermelidir");
       passwordError.css("display", "block");
       return false;
     } else if (passwordValue.match(/\s/)) {
-      passwordError.text("Your password must not contain any spaces");
+      passwordError.text("Şifreniz boşluk içermemelidir");
       passwordError.css("display", "block");
       return false;
     } else {
@@ -462,11 +468,11 @@ $(() => {
   function checkPhone() {
     const phoneValue = phone.val().trim();
     if (phoneValue === "") {
-      phoneError.text("Phone cannot be blank");
+      phoneError.text("Telefon boş olamaz");
       phoneError.css("display", "block");
       return false;
     } else if (phoneValue.length < 15) {
-      phoneError.text("Phone format is short");
+      phoneError.text("Telefon formatı kısa");
       phoneError.css("display", "block");
       return false;
     } else {
@@ -483,7 +489,7 @@ $(() => {
     const passwordValue = signupPassword.val().trim();
     const passwordConfirmValue = signupPasswordConf.val().trim();
     if (passwordValue !== passwordConfirmValue) {
-      passwordConfError.text("Passwords do not match");
+      passwordConfError.text("Şifreler eşleşmiyor");
       passwordConfError.css("display", "block");
       return false;
     } else {
@@ -494,7 +500,7 @@ $(() => {
 
   function checkAgreement() {
     if (!agreement.is(":checked")) {
-      agreementError.text("You must accept the agreement");
+      agreementError.text("Koşulları kabul etmelisiniz");
       agreementError.css("display", "block");
       return false;
     } else {
@@ -541,11 +547,11 @@ $(() => {
   function checkLoginEmail() {
     const logEmailValue = logEmail.val().trim();
     if (logEmailValue === "") {
-      emailError.text("Email cannot be blank");
+      emailError.text("Email alanı boş olamaz");
       emailError.css("display", "block");
       return false;
     } else if (matchesEmail(logEmailValue) === false) {
-      emailError.text("Email does not exist");
+      emailError.text("Email adresi bulunamadı");
       emailError.css("display", "block");
       return false;
     } else {
@@ -558,11 +564,11 @@ $(() => {
     const logPasswordValue = logPassword.val().trim();
     const logEmailValue = logEmail.val().trim();
     if (matchesPassword(logEmailValue, logPasswordValue) === false) {
-      passwordError.text("Password is incorrect");
+      passwordError.text("Şifre yanlış");
       passwordError.css("display", "block");
       return false;
     } else if (logPasswordValue === "") {
-      passwordError.text("Password cannot be blank");
+      passwordError.text("Şifre boş olamaz");
       passwordError.css("display", "block");
       return false;
     } else {
@@ -573,7 +579,7 @@ $(() => {
   }
 
   function matchesEmail(email) {
-    users = JSON.parse(localStorage.getItem("users"));
+    users = JSON.parse(localStorage.getItem("users")) || [];
     for (let i = 0; i < users.length; i++) {
       if (users[i].email == email) {
         return true;
@@ -584,6 +590,7 @@ $(() => {
   }
 
   function matchesPassword(logEmail, logPassword) {
+    users = JSON.parse(localStorage.getItem("users")) || [];
     for (let i = 0; i < users.length; i++) {
       if (users[i].email == logEmail && users[i].password === logPassword) {
         return true;
@@ -609,7 +616,7 @@ $(() => {
       checkPasswordConfirm() &&
       checkAgreement()
     ) {
-      $.notify("You have successfully registered", "success");
+      $.notify("Başarıyla kayıt oldunuz", "success");
       setTimeout(() => {
         registerUser();
         window.location.href = "login.html";
@@ -656,7 +663,7 @@ $(() => {
   // sayfa yüklendiğinde çalışacak fonksiyonlar
   windowLoad();
   windowLoad2();
-  
+
 
 
   loginForm.on("submit", (e) => {
@@ -677,8 +684,9 @@ $(() => {
 
   const searchInput = $(".search-input");
 
-  searchInput.on("input", (e) => {
+  searchInput.on("input", function () {
     const searchValue = searchInput.val().trim();
+    const products = JSON.parse(localStorage.getItem("products"));
     const filteredProducts = products.filter((product) => {
       return product.title.toLowerCase().includes(searchValue.toLowerCase());
     });
@@ -693,11 +701,13 @@ $(() => {
             <div class="product">
             <div class="product-image">
                 <img src="${product.image}"/>
-                <div class="product-stock">Stock ${product.stock}</div>
+                <div class="product-stock">Stok ${product.stock}</div>
             </div>
+            <div class="product-info">
                 <h2 class="product-title" title="${product.title}">${product.title}</h2>
                 <p class="product-price">${product.price} TL</p>
-                <a class="btn w-100">Add to Cart</a>
+            </div>
+                <a class="btn w-100">Sepete Ekle</a>
             </div>
         </div>`);
     });
@@ -712,11 +722,11 @@ $(() => {
       e.target.value = !x[2]
         ? x[1]
         : "(" +
-          x[1] +
-          ") " +
-          x[2] +
-          (x[3] ? " " + x[3] : "") +
-          (x[4] ? " " + x[4] : "");
+        x[1] +
+        ") " +
+        x[2] +
+        (x[3] ? " " + x[3] : "") +
+        (x[4] ? " " + x[4] : "");
     });
   }
 });
